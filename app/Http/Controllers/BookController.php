@@ -14,6 +14,7 @@ class BookController extends Controller
     {
         $title = $request->input('title');
         $filter = $request->input('filter', '');
+        $page = $request->input('page', '');
 
         $books = Book::when($title, fn($query, $title)=> $query->title($title));
 
@@ -27,11 +28,12 @@ class BookController extends Controller
 
         //$books = $books->get();
 
-        $cacheKey = 'books.index:' . $filter . ':' . $title;
+        $cacheKey = 'books.index():' . $filter . ':' . $title . ':' . $page;
         $books = cache()->remember(
             $cacheKey, 
             1800, 
-            fn() => $books->get());
+            fn() => $books->paginate(15)
+        );
 
         return view('books.index', ['books' => $books]);
     }
@@ -57,7 +59,7 @@ class BookController extends Controller
      */
     public function show(int $id)
     {
-        $cacheKey = 'book.show:' . $id . ':reviews';
+        $cacheKey = 'book.showtest:' . $id . ':reviews';
 
         $book = cache()->remember(
             $cacheKey, 

@@ -54,5 +54,10 @@
                 </div>
             </li>
         @endforelse
+        @isset($books)
+            <div>
+                {{ $books->links() }}
+            </div>
+        @endisset
     </ul>
 @endsection
